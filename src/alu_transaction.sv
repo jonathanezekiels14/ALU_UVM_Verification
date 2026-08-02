@@ -31,7 +31,40 @@ class alu_transaction extends uvm_sequence_item;
 		if (!$cast(obj,rhs)) begin
 			`uvm_fatal("do_copy","Casting of do_copy object failed");
 		end
+		super.do_copy(rhs);
+		this.OPA = obj.OPA;
+		this.OPB = obj.OPB;
+		this.INP_VALID = obj.INP_VALID;
+		this.CMD = obj.CMD;
+		this.MODE = obj.MODE;
+		this.CIN = obj.CIN;
+		this.CE= obj.CE;
+		this.RES = obj.RES;
+		this.ERR = obj.ERR;
+		this.COUT = obj.COUT;
+		this.OFLOW = obj.OFLOW;
+		this.G = obj.G;
+		this.L = obj.L;
+		this.E = obj.E;
 	endfunction
+
+	virtual function bit do_compare(uvm_object rhs,uvm_comparer comparer);
+		alu_transaction obj;
+		if(!$cast(obj,rhs))
+		begin
+			`uvm_fatal("do_compare","Cast for Comparing object failed");
+			return 0;
+		end
+		return 
+		super.do_compare(rhs,comparer) &&
+		RES == obj.RES &&
+		ERR == obj.ERR &&
+		OFLOW == obj.OFLOW &&
+		COUT == obj.COUT &&
+		G == obj.G &&
+		L == obj.L &&
+			E == obj.E;
+	endfunction	
 endclass
 
 
