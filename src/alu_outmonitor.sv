@@ -1,11 +1,11 @@
-class alu_inpmon extends uvm_monitor;
-        `uvm_component_utils(alu_inpmon)
+class alu_outmon extends uvm_monitor;
+        `uvm_component_utils(alu_outmon)
         
-        uvm_analysis_port#(alu_transaction) inp_monitor_port;
+        uvm_analysis_port#(alu_transaction) out_monitor_port;
         virtual alu_interface.INP_MON vif;
         alu_config cfg;
 
-        function new(string name="alu_inpmon", uvm_component parent);
+        function new(string name="alu_outmon", uvm_component parent);
                 super.new(name, parent);
         endfunction
 
@@ -13,7 +13,7 @@ class alu_inpmon extends uvm_monitor;
                 super.build_phase(phase);
                 if(!uvm_config_db#(alu_config)::get(this, "", "alu_config", cfg))
                         `uvm_fatal(get_type_name(), "Input_Monitor Getting Failed");
-                inp_monitor_port = new("inp_monitor_port", this);
+                out_monitor_port = new("out_monitor_port", this);
         endfunction
 
         function void connect_phase(uvm_phase phase);
@@ -91,7 +91,7 @@ class alu_inpmon extends uvm_monitor;
                                         timeout_tx.CIN = current_cin;
                                         timeout_tx.CE = current_ce;
                                         timeout_tx.timeout_occurred = 1'b1;
-                                        inp_monitor_port.write(timeout_tx);
+                                        out_monitor_port.write(timeout_tx);
                                         
                                         has_oprd1 = 0;
                                         has_oprd2 = 0;
@@ -109,7 +109,7 @@ class alu_inpmon extends uvm_monitor;
                                 complete_tx.CIN = current_cin;
                                 complete_tx.CE = current_ce;
                                 complete_tx.timeout_occurred = 1'b0;
-                                inp_monitor_port.write(complete_tx);
+                                out_monitor_port.write(complete_tx);
                                 
                                 has_oprd1 = 0;
                                 has_oprd2 = 0;

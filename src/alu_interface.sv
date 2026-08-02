@@ -1,3 +1,4 @@
+`include "alu_defines.svh"
 interface alu_interface (input logic CLK);
         // Inputs
         logic RST, CE, MODE, CIN;

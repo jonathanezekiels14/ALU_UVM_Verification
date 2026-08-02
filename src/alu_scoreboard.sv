@@ -30,7 +30,7 @@ class alu_scoreboard extends uvm_scoreboard;
         virtual function void write_inp(alu_transaction req);
                 alu_transaction exp_tx;
                 $cast(exp_tx, req.clone()); // Create an independent copy for the reference model
-                
+
                 predict_output(exp_tx);
                 exp_queue.push_back(exp_tx);
         endfunction
@@ -57,7 +57,7 @@ class alu_scoreboard extends uvm_scoreboard;
                 tx.E = 1'b0;
                 tx.L = 1'b0;
 
-                // 2. Timeout Error Condition (exceeded 16 clock cycles waiting for operand B)[cite: 1]
+                // 2. Timeout Error Condition
                 if (tx.timeout_occurred) begin
                         tx.ERR = 1'b1;
                         tx.RES = 'b0;
@@ -67,64 +67,64 @@ class alu_scoreboard extends uvm_scoreboard;
                 // 3. Execution Stage (when Clock Enable is high)
                 if (tx.CE == 1'b1) begin
                         if (tx.MODE == 1'b1) begin
-                                // --- ARITHMETIC OPERATIONS (MODE = 1) ---[cite: 1]
+                                // --- ARITHMETIC OPERATIONS (MODE = 1) ---
                                 case (tx.CMD)
-                                        4'b0000: begin // ADD[cite: 1]
-                                                {tx.COUT, tx.RES} = tx.OPA + tx.OPB;
+                                        4'b0000: begin // ADD (Widened operands to capture COUT)
+                                                {tx.COUT, tx.RES} = {1'b0, tx.OPA} + {1'b0, tx.OPB};
                                         end
-                                        4'b0001: begin // SUB[cite: 1]
-                                                {tx.OFLOW, tx.RES} = tx.OPA - tx.OPB;
+                                        4'b0001: begin // SUB (Widened operands to capture OFLOW/borrow)
+                                                {tx.OFLOW, tx.RES} = {1'b0, tx.OPA} - {1'b0, tx.OPB};
                                         end
-                                        4'b0010: begin // ADD_CIN[cite: 1]
-                                                {tx.COUT, tx.RES} = tx.OPA + tx.OPB + tx.CIN;
+                                        4'b0010: begin // ADD_CIN
+                                                {tx.COUT, tx.RES} = {1'b0, tx.OPA} + {1'b0, tx.OPB} + {8'b0, tx.CIN};
                                         end
-                                        4'b0011: begin // SUB_CIN[cite: 1]
-                                                {tx.OFLOW, tx.RES} = tx.OPA - tx.OPB - tx.CIN;
+                                        4'b0011: begin // SUB_CIN
+                                                {tx.OFLOW, tx.RES} = {1'b0, tx.OPA} - {1'b0, tx.OPB} - {8'b0, tx.CIN};
                                         end
-                                        4'b0100: begin // INC_A[cite: 1]
+                                        4'b0100: begin // INC_A
                                                 tx.RES = tx.OPA + 1'b1;
                                         end
-                                        4'b0101: begin // DEC_A[cite: 1]
+                                        4'b0101: begin // DEC_A
                                                 tx.RES = tx.OPA - 1'b1;
                                         end
-                                        4'b0110: begin // INC_B[cite: 1]
+                                        4'b0110: begin // INC_B
                                                 tx.RES = tx.OPB + 1'b1;
                                         end
-                                        4'b0111: begin // DEC_B[cite: 1]
+                                        4'b0111: begin // DEC_B
                                                 tx.RES = tx.OPB - 1'b1;
                                         end
-                                        4'b1000: begin // CMP[cite: 1]
+                                        4'b1000: begin // CMP
                                                 if (tx.OPA > tx.OPB)      tx.G = 1'b1;
                                                 else if (tx.OPA < tx.OPB) tx.L = 1'b1;
                                                 else                      tx.E = 1'b1;
                                         end
-                                        4'b1001: begin // MUL_INC (3-cycle)[cite: 1]
+                                        4'b1001: begin // MUL_INC (3-cycle)
                                                 tx.RES = (tx.OPA + 1'b1) * (tx.OPB + 1'b1);
                                         end
-                                        4'b1010: begin // MUL_SHL (3-cycle)[cite: 1]
+                                        4'b1010: begin // MUL_SHL (3-cycle)
                                                 tx.RES = (tx.OPA << 1) * tx.OPB;
                                         end
                                         default: begin
                                                 tx.RES = 'b0;
                                         end
                                 endcase
-                        end 
+                        end
                         else begin
-                                // --- LOGICAL OPERATIONS (MODE = 0) ---[cite: 1]
+                                // --- LOGICAL OPERATIONS (MODE = 0) ---
                                 case (tx.CMD)
-                                        4'b0000: tx.RES = { {`DW{1'b0}}, tx.OPA & tx.OPB };       // AND[cite: 1]
-                                        4'b0001: tx.RES = { {`DW{1'b0}}, ~(tx.OPA & tx.OPB) };     // NAND[cite: 1]
-                                        4'b0010: tx.RES = { {`DW{1'b0}}, tx.OPA | tx.OPB };       // OR[cite: 1]
-                                        4'b0011: tx.RES = { {`DW{1'b0}}, ~(tx.OPA | tx.OPB) };     // NOR[cite: 1]
-                                        4'b0100: tx.RES = { {`DW{1'b0}}, tx.OPA ^ tx.OPB };       // XOR[cite: 1]
-                                        4'b0101: tx.RES = { {`DW{1'b0}}, ~(tx.OPA ^ tx.OPB) };     // XNOR[cite: 1]
-                                        4'b0110: tx.RES = { {`DW{1'b0}}, ~tx.OPA };               // NOT_A[cite: 1]
-                                        4'b0111: tx.RES = { {`DW{1'b0}}, ~tx.OPB };               // NOT_B[cite: 1]
-                                        4'b1000: tx.RES = { {`DW{1'b0}}, tx.OPA >> 1 };           // SHR1_A[cite: 1]
-                                        4'b1001: tx.RES = { {`DW{1'b0}}, tx.OPA << 1 };           // SHL1_A[cite: 1]
-                                        4'b1010: tx.RES = { {`DW{1'b0}}, tx.OPB >> 1 };           // SHR1_B[cite: 1]
-                                        4'b1011: tx.RES = { {`DW{1'b0}}, tx.OPB << 1 };           // SHL1_B[cite: 1]
-                                        4'b1100: begin // ROL_A_B[cite: 1]
+                                        4'b0000: tx.RES = { {`DW{1'b0}}, tx.OPA & tx.OPB };        // AND
+                                        4'b0001: tx.RES = { {`DW{1'b0}}, ~(tx.OPA & tx.OPB) };      // NAND
+                                        4'b0010: tx.RES = { {`DW{1'b0}}, tx.OPA | tx.OPB };        // OR
+                                        4'b0011: tx.RES = { {`DW{1'b0}}, ~(tx.OPA | tx.OPB) };      // NOR
+                                        4'b0100: tx.RES = { {`DW{1'b0}}, tx.OPA ^ tx.OPB };        // XOR
+                                        4'b0101: tx.RES = { {`DW{1'b0}}, ~(tx.OPA ^ tx.OPB) };      // XNOR
+                                        4'b0110: tx.RES = { {`DW{1'b0}}, ~tx.OPA };                 // NOT_A
+                                        4'b0111: tx.RES = { {`DW{1'b0}}, ~tx.OPB };                 // NOT_B
+                                        4'b1000: tx.RES = { {`DW{1'b0}}, tx.OPA >> 1 };            // SHR1_A
+                                        4'b1001: tx.RES = { {`DW{1'b0}}, tx.OPA << 1 };            // SHL1_A
+                                        4'b1010: tx.RES = { {`DW{1'b0}}, tx.OPB >> 1 };            // SHR1_B
+                                        4'b1011: tx.RES = { {`DW{1'b0}}, tx.OPB << 1 };            // SHL1_B
+                                        4'b1100: begin // ROL_A_B
                                                 if (tx.OPB[7:4] != 4'b0000) begin
                                                         tx.ERR = 1'b1;
                                                 end else begin
@@ -133,7 +133,7 @@ class alu_scoreboard extends uvm_scoreboard;
                                                         tx.RES = { {`DW{1'b0}}, (tx.OPA << rot_amt) | (tx.OPA >> (`DW - rot_amt)) };
                                                 end
                                         end
-                                        4'b1101: begin // ROR_A_B[cite: 1]
+                                        4'b1101: begin // ROR_A_B
                                                 if (tx.OPB[7:4] != 4'b0000) begin
                                                         tx.ERR = 1'b1;
                                                 end else begin
@@ -156,18 +156,18 @@ class alu_scoreboard extends uvm_scoreboard;
                         exp_tx = exp_queue.pop_front();
 
                         // Compare critical fields (RES, Flags, ERR)
-                        if ((act_tx.RES === exp_tx.RES) && 
-                            (act_tx.COUT === exp_tx.COUT) && 
-                            (act_tx.OFLOW === exp_tx.OFLOW) && 
-                            (act_tx.G === exp_tx.G) && 
-                            (act_tx.E === exp_tx.E) && 
-                            (act_tx.L === exp_tx.L) && 
+                        if ((act_tx.RES === exp_tx.RES) &&
+                            (act_tx.COUT === exp_tx.COUT) &&
+                            (act_tx.OFLOW === exp_tx.OFLOW) &&
+                            (act_tx.G === exp_tx.G) &&
+                            (act_tx.E === exp_tx.E) &&
+                            (act_tx.L === exp_tx.L) &&
                             (act_tx.ERR === exp_tx.ERR)) begin
                                 match_count++;
-                                `uvm_info("SCBD_MATCH", $sformatf("PASS! Match Count: %0d\n%s", match_count, act_tx.sprint()), UVM_HIGH)
+                                `uvm_info("SCBD_MATCH", $sformatf("PASS! Match Count: %0d", match_count), UVM_HIGH)
                         end else begin
                                 mismatch_count++;
-                                `uvm_error("SCBD_MISMATCH", $sformatf("MISMATCH #%0d!\nExpected:\n%s\nActual:\n%s", 
+                                `uvm_error("SCBD_MISMATCH", $sformatf("MISMATCH #%0d!\nExpected:\n%s\nActual:\n%s",
                                            mismatch_count, exp_tx.sprint(), act_tx.sprint()))
                         end
                 end else begin
@@ -177,11 +177,11 @@ class alu_scoreboard extends uvm_scoreboard;
 
         function void report_phase(uvm_phase phase);
                 super.report_phase(phase);
-                `uvm_info("SCBD_REPORT", $sformatf("----------------------------------------", UVM_LOW)
-                `uvm_info("SCBD_REPORT", $sformatf("ALU SCOREBOARD REPORT Summary:"), UVM_LOW)
+                `uvm_info("SCBD_REPORT", "----------------------------------------", UVM_LOW)
+                `uvm_info("SCBD_REPORT", "ALU SCOREBOARD REPORT Summary:", UVM_LOW)
                 `uvm_info("SCBD_REPORT", $sformatf("Total Matches   : %0d", match_count), UVM_LOW)
                 `uvm_info("SCBD_REPORT", $sformatf("Total Mismatches: %0d", mismatch_count), UVM_LOW)
-                `uvm_info("SCBD_REPORT", $sformatf("----------------------------------------"), UVM_LOW)
+                `uvm_info("SCBD_REPORT", "----------------------------------------", UVM_LOW)
         endfunction
 
 endclass

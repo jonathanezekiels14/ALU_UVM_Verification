@@ -1,7 +1,7 @@
 class alu_output_agent extends uvm_agent;
         `uvm_component_utils(alu_output_agent)
 
-        alu_outmonitor out_mon;
+        alu_outmon out_mon;
         alu_config     cfg;
 
         uvm_analysis_port#(alu_transaction) agent_out_port;
@@ -16,7 +16,7 @@ class alu_output_agent extends uvm_agent;
                 if (!uvm_config_db#(alu_config)::get(this, "", "alu_config", cfg))
                         `uvm_fatal("ALU_OUT_AGENT", "Failed to get alu_config from database");
 
-                out_mon = alu_outmonitor::type_id::create("out_mon", this);
+                out_mon = alu_outmon::type_id::create("out_mon", this);
                 agent_out_port = new("agent_out_port", this);
         endfunction
 

@@ -3,44 +3,43 @@ class alu_coverage_subscriber extends uvm_subscriber #(alu_transaction);
 
   alu_transaction tx_item;
 
-  // Covergroup matching your ALU coverage plan
   covergroup alu_cg;
     option.per_instance = 1;
 
-    cp_ce: covergroup cp_ce {
+    cp_ce: coverpoint tx_item.CE {
       bins ce_inactive = {0};
       bins ce_active   = {1};
     }
 
-    cp_opa: covergroup cp_opa {
-      bins zero     = {32'h00000000};
-      bins max_val  = {32'hFFFFFFFF};
-      bins mid_val  = {[32'h00000001:32'hFFFFFFFE]};
+    cp_opa: coverpoint tx_item.OPA {
+      bins zero     = {'0};
+      bins max_val  = {'1};
+      bins mid_val  = {[1 : ('1 - 1)]};
     }
 
-    cp_opb: covergroup cp_opb {
-      bins zero     = {32'h00000000};
-      bins max_val  = {32'hFFFFFFFF};
-      bins mid_val  = {[32'h00000001:32'hFFFFFFFE]};
+    cp_opb: coverpoint tx_item.OPB {
+      bins zero     = {'0};
+      bins max_val  = {'1};
+      bins mid_val  = {[1 : ('1 - 1)]};
     }
 
-    cp_mode: covergroup cp_mode {
+    cp_mode: coverpoint tx_item.MODE {
       bins arithmetic = {0};
       bins logical    = {1};
     }
 
-    cp_cmd: covergroup cp_cmd {
+    cp_cmd: coverpoint tx_item.CMD {
       bins cmds[] = {[0:13]};
     }
 
-    cp_inpv: covergroup cp_inpv {
+    cp_inpv: coverpoint tx_item.INP_VALID {
       bins val_none  = {2'b00};
       bins val_opa   = {2'b01};
       bins val_opb   = {2'b10};
       bins val_both  = {2'b11};
     }
 
-    cp_cin: covergroup cp_cin {
+    cp_cin: coverpoint tx_item.CIN {
       bins cin_0 = {0};
       bins cin_1 = {1};
     }
