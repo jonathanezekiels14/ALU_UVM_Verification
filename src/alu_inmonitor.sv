@@ -1,6 +1,6 @@
 class alu_inpmon extends uvm_monitor;
         `uvm_component_utils(alu_inpmon)
-        
+
         uvm_analysis_port#(alu_transaction) inp_monitor_port;
         virtual alu_interface.INP_MON vif;
         alu_config cfg;
@@ -34,7 +34,7 @@ class alu_inpmon extends uvm_monitor;
 
                 forever begin
                         @(vif.inp_mon_cb);
-                        
+
                         if (vif.inp_mon_cb.RST == 1'b1) begin
                                 has_oprd1 = 0;
                                 has_oprd2 = 0;
@@ -60,6 +60,7 @@ class alu_inpmon extends uvm_monitor;
                                         current_cin = vif.inp_mon_cb.CIN;
                                         current_ce = vif.inp_mon_cb.CE;
                                         has_oprd2 = 1;
+                                        timeout_counter = 0;
                                 end
                                 2'b11: begin
                                         oprd1 = vif.inp_mon_cb.OPA;
@@ -73,9 +74,8 @@ class alu_inpmon extends uvm_monitor;
                                         timeout_counter = 0;
                                 end
                                 default: begin
-                                        has_oprd1 = 0;
-                                        has_oprd2 = 0;
-                                        timeout_counter = 0;
+                                        // Do nothing. Preserve has_oprd1/has_oprd2 states 
+                                        // across idle or gap cycles while waiting for the next operand.
                                 end
                         endcase
 
@@ -92,7 +92,7 @@ class alu_inpmon extends uvm_monitor;
                                         timeout_tx.CE = current_ce;
                                         timeout_tx.timeout_occurred = 1'b1;
                                         inp_monitor_port.write(timeout_tx);
-                                        
+
                                         has_oprd1 = 0;
                                         has_oprd2 = 0;
                                         timeout_counter = 0;
@@ -110,7 +110,7 @@ class alu_inpmon extends uvm_monitor;
                                 complete_tx.CE = current_ce;
                                 complete_tx.timeout_occurred = 1'b0;
                                 inp_monitor_port.write(complete_tx);
-                                
+
                                 has_oprd1 = 0;
                                 has_oprd2 = 0;
                                 timeout_counter = 0;

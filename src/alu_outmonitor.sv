@@ -1,8 +1,8 @@
 class alu_outmon extends uvm_monitor;
         `uvm_component_utils(alu_outmon)
-        
+
         uvm_analysis_port#(alu_transaction) out_monitor_port;
-        virtual alu_interface.INP_MON vif;
+        virtual alu_interface.OUT_MON vif;
         alu_config cfg;
 
         function new(string name="alu_outmon", uvm_component parent);
@@ -12,7 +12,7 @@ class alu_outmon extends uvm_monitor;
         function void build_phase(uvm_phase phase);
                 super.build_phase(phase);
                 if(!uvm_config_db#(alu_config)::get(this, "", "alu_config", cfg))
-                        `uvm_fatal(get_type_name(), "Input_Monitor Getting Failed");
+                        `uvm_fatal(get_type_name(), "Output_Monitor Config Getting Failed");
                 out_monitor_port = new("out_monitor_port", this);
         endfunction
 
@@ -21,101 +21,38 @@ class alu_outmon extends uvm_monitor;
                 vif = cfg.vif;
         endfunction
 
-        task run_phase(uvm_phase phase);
-                logic [`DW-1:0] oprd1;
-                logic [`DW-1:0] oprd2;
-                logic has_oprd1 = 0;
-                logic has_oprd2 = 0;
-                int timeout_counter = 0;
-                logic [`CW-1:0] current_cmd;
-                logic current_mode;
-                logic current_cin;
-                logic current_ce;
+	task run_phase(uvm_phase phase);
+		forever begin
+        		@(vif.out_mon_cb);
 
-                forever begin
-                        @(vif.inp_mon_cb);
-                        
-                        if (vif.inp_mon_cb.RST == 1'b1) begin
-                                has_oprd1 = 0;
-                                has_oprd2 = 0;
-                                timeout_counter = 0;
-                                continue;
-                        end
+        		// Handle reset condition
+        		if (vif.out_mon_cb.RST == 1'b1) begin
+            			continue;
+        		end
 
-                        // Track INP_VALID encoding states
-                        case (vif.inp_mon_cb.INP_VALID)
-                                2'b01: begin
-                                        oprd1 = vif.inp_mon_cb.OPA;
-                                        current_cmd = vif.inp_mon_cb.CMD;
-                                        current_mode = vif.inp_mon_cb.MODE;
-                                        current_cin = vif.inp_mon_cb.CIN;
-                                        current_ce = vif.inp_mon_cb.CE;
-                                        has_oprd1 = 1;
-                                        timeout_counter = 0;
-                                end
-                                2'b10: begin
-                                        oprd2 = vif.inp_mon_cb.OPB;
-                                        current_cmd = vif.inp_mon_cb.CMD;
-                                        current_mode = vif.inp_mon_cb.MODE;
-                                        current_cin = vif.inp_mon_cb.CIN;
-                                        current_ce = vif.inp_mon_cb.CE;
-                                        has_oprd2 = 1;
-                                end
-                                2'b11: begin
-                                        oprd1 = vif.inp_mon_cb.OPA;
-                                        oprd2 = vif.inp_mon_cb.OPB;
-                                        current_cmd = vif.inp_mon_cb.CMD;
-                                        current_mode = vif.inp_mon_cb.MODE;
-                                        current_cin = vif.inp_mon_cb.CIN;
-                                        current_ce = vif.inp_mon_cb.CE;
-                                        has_oprd1 = 1;
-                                        has_oprd2 = 1;
-                                        timeout_counter = 0;
-                                end
-                                default: begin
-                                        has_oprd1 = 0;
-                                        has_oprd2 = 0;
-                                        timeout_counter = 0;
-                                end
-                        endcase
+        		// Sample output only when Clock Enable (CE) is active
+        		if (vif.out_mon_cb.CE == 1'b1) begin
+            			alu_transaction tx = alu_transaction::type_id::create("tx");
 
-                        // 16-cycle timeout logic if waiting for the second operand
-                        if ((has_oprd1 ^ has_oprd2)) begin
-                                timeout_counter++;
-                                if (timeout_counter >= 16) begin
-                                        alu_transaction timeout_tx = alu_transaction::type_id::create("timeout_tx");
-                                        timeout_tx.OPA = oprd1;
-                                        timeout_tx.OPB = oprd2;
-                                        timeout_tx.CMD = current_cmd;
-                                        timeout_tx.MODE = current_mode;
-                                        timeout_tx.CIN = current_cin;
-                                        timeout_tx.CE = current_ce;
-                                        timeout_tx.timeout_occurred = 1'b1;
-                                        out_monitor_port.write(timeout_tx);
-                                        
-                                        has_oprd1 = 0;
-                                        has_oprd2 = 0;
-                                        timeout_counter = 0;
-                                end
-                        end
+            			// --- POPULATE INPUTS ---
+            			tx.OPA     = vif.out_mon_cb.OPA;
+            			tx.OPB     = vif.out_mon_cb.OPB;
+            			tx.CMD     = vif.out_mon_cb.CMD;
+            			tx.MODE    = vif.out_mon_cb.MODE;
+            			tx.CIN     = vif.out_mon_cb.CIN;
+            			tx.CE      = vif.out_mon_cb.CE;
 
-                        // Complete transaction when both operands are available
-                        if (has_oprd1 && has_oprd2) begin
-                                alu_transaction complete_tx = alu_transaction::type_id::create("complete_tx");
-                                complete_tx.OPA = oprd1;
-                                complete_tx.OPB = oprd2;
-                                complete_tx.CMD = current_cmd;
-                                complete_tx.MODE = current_mode;
-                                complete_tx.CIN = current_cin;
-                                complete_tx.CE = current_ce;
-                                complete_tx.timeout_occurred = 1'b0;
-                                out_monitor_port.write(complete_tx);
-                                
-                                has_oprd1 = 0;
-                                has_oprd2 = 0;
-                                timeout_counter = 0;
-                        end
-                end
-        endtask
+            			// --- POPULATE OUTPUTS ---
+            			tx.RES     = vif.out_mon_cb.RES;
+            			tx.COUT    = vif.out_mon_cb.COUT;
+            			tx.OFLOW   = vif.out_mon_cb.OFLOW;
+            			tx.ERR     = vif.out_mon_cb.ERR;
+            			tx.G       = vif.out_mon_cb.G;
+            			tx.L       = vif.out_mon_cb.L;
+            			tx.E       = vif.out_mon_cb.E;
 
+           			out_monitor_port.write(tx);
+			end
+    		end
+	endtask	
 endclass

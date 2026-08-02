@@ -3,11 +3,22 @@
 # =====================================================================
 
 # Default configurable parameters (can be overridden from terminal)
-TEST   ?= alu_rand_test
-NUM_TX ?= 10000
+TOP        ?= tb_top
+TEST       ?= alu_regression_test
+NUM_TX     ?= 10000
+SIM_NAME   ?= sim_run
+UCDB_NAME  ?= coverage_results
 
-# Simulation flags for batch mode (auto-exits when simulation finishes)
-VSIM_BATCH_FLAGS = -c -do "run -all; exit"
+# Advanced simulation flags for batch mode with coverage, assertions, and logging
+VSIM_BATCH_FLAGS = -vopt work.$(TOP) \
+                   -voptargs= "+acc=npr +cover=sbc"  \
+                   -assertdebug \
+                   -l $(SIM_NAME).log \
+                   -coverage \
+                   -c \
+                   -do "coverage save -onexit -assert -directive -cvg -codeAll $(UCDB_NAME).ucdb; run -all; exit" \
+                   +UVM_TESTNAME=$(TEST) \
+                   +NUM_TX=$(NUM_TX)
 
 .PHONY: all lib comp sim gui clean
 
@@ -22,19 +33,19 @@ comp: lib
 	vlog -sv alu_defines.svh
 	vlog -sv alu_interface.sv
 	vlog -sv alu_assertions.sv
-	vlog -sv alu.sv             # <-- Replace with your actual RTL file name(s)
+	vlog -sv alu.sv
 	vlog -sv +incdir+. alu_pkg.sv
 	vlog -sv tb_top.sv
 
-# 3. Run simulation in Batch Mode (Terminal output only)
+# 3. Run simulation in Batch Mode (with coverage & assertion debugging)
 sim: comp
-	vsim work.tb_top $(VSIM_BATCH_FLAGS) +UVM_TESTNAME=$(TEST) +NUM_TX=$(NUM_TX)
+	vsim $(VSIM_BATCH_FLAGS)
 
 # 4. Run simulation in Graphical User Interface (GUI) Mode
 gui: comp
-	vsim work.tb_top +UVM_TESTNAME=$(TEST) +NUM_TX=$(NUM_TX) &
+	vsim -vopt work.$(TOP) -voptargs=+acc=npr -assertdebug -coverage +UVM_TESTNAME=$(TEST) +NUM_TX=$(NUM_TX) &
 
-# 5. Clean up compilation artifacts and logs
+# 5. Clean up compilation artifacts, logs, and coverage databases
 clean:
-	@rm -rf work transcript *.log *.wlf
+	@rm -rf work transcript *.log *.wlf *.ucdb
 	@echo "Workspace cleaned successfully!"

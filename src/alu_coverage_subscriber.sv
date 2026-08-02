@@ -12,20 +12,21 @@ class alu_coverage_subscriber extends uvm_subscriber #(alu_transaction);
     }
 
     cp_opa: coverpoint tx_item.OPA {
-      bins zero     = {'0};
-      bins max_val  = {'1};
-      bins mid_val  = {[1 : ('1 - 1)]};
+      bins zero     = {8'h00};
+      bins max_val  = {8'hFF};
+      bins mid_val  = {[8'h01 : 8'hFE]};
     }
 
     cp_opb: coverpoint tx_item.OPB {
-      bins zero     = {'0};
-      bins max_val  = {'1};
-      bins mid_val  = {[1 : ('1 - 1)]};
+      bins zero     = {8'h00};
+      bins max_val  = {8'hFF};
+      bins mid_val  = {[8'h01 : 8'hFE]};
     }
 
+    // Fixed: MODE 1 = Arithmetic, MODE 0 = Logical (matching design)
     cp_mode: coverpoint tx_item.MODE {
-      bins arithmetic = {0};
-      bins logical    = {1};
+      bins logical    = {0};
+      bins arithmetic = {1};
     }
 
     cp_cmd: coverpoint tx_item.CMD {
@@ -55,6 +56,7 @@ class alu_coverage_subscriber extends uvm_subscriber #(alu_transaction);
   endfunction
 
   virtual function void write(alu_transaction t);
+    if (t == null) return;
     this.tx_item = t;
     alu_cg.sample();
   endfunction

@@ -1,0 +1,20 @@
+var g_data = {
+d7:{directives:[{dummy:0}
+,{cr:'c',z:'cover_arithmetic_mode',h:'4479',c:'g'}
+,{cr:'c',z:'cover_logical_mode',h:'4588',c:'g'}
+,{cr:'c',z:'cover_overflow_event',h:'413',c:'g'}
+,{cr:'c',z:'cover_cout_event',h:'465',c:'g'}
+,{cr:'c',z:'cover_error_event',h:'196',c:'g'}
+],
+scopes:[{link:'z.htm?f=0&s=7',val:'work.alu_assertions'}]},
+d12:{directives:[{dummy:0}
+,{cr:'c',z:'cover_arithmetic_mode',h:'4479',c:'g'}
+,{cr:'c',z:'cover_logical_mode',h:'4588',c:'g'}
+,{cr:'c',z:'cover_overflow_event',h:'413',c:'g'}
+,{cr:'c',z:'cover_cout_event',h:'465',c:'g'}
+,{cr:'c',z:'cover_error_event',h:'196',c:'g'}
+],
+scopes:[{s:'9',b:'0',val:'tb_top'},{s:'11',b:'0',val:'u_dut'},{link:'z.htm?f=0&s=12',val:'u_alu_sva'}]},
+dummyEnd:0
+};
+processDirectivesData(g_data,1);

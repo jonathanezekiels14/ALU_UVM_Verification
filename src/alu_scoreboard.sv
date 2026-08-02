@@ -69,10 +69,10 @@ class alu_scoreboard extends uvm_scoreboard;
                         if (tx.MODE == 1'b1) begin
                                 // --- ARITHMETIC OPERATIONS (MODE = 1) ---
                                 case (tx.CMD)
-                                        4'b0000: begin // ADD (Widened operands to capture COUT)
+                                        4'b0000: begin // ADD
                                                 {tx.COUT, tx.RES} = {1'b0, tx.OPA} + {1'b0, tx.OPB};
                                         end
-                                        4'b0001: begin // SUB (Widened operands to capture OFLOW/borrow)
+                                        4'b0001: begin // SUB
                                                 {tx.OFLOW, tx.RES} = {1'b0, tx.OPA} - {1'b0, tx.OPB};
                                         end
                                         4'b0010: begin // ADD_CIN
@@ -98,10 +98,10 @@ class alu_scoreboard extends uvm_scoreboard;
                                                 else if (tx.OPA < tx.OPB) tx.L = 1'b1;
                                                 else                      tx.E = 1'b1;
                                         end
-                                        4'b1001: begin // MUL_INC (3-cycle)
+                                        4'b1001: begin // MUL_INC
                                                 tx.RES = (tx.OPA + 1'b1) * (tx.OPB + 1'b1);
                                         end
-                                        4'b1010: begin // MUL_SHL (3-cycle)
+                                        4'b1010: begin // MUL_SHL
                                                 tx.RES = (tx.OPA << 1) * tx.OPB;
                                         end
                                         default: begin
@@ -120,10 +120,10 @@ class alu_scoreboard extends uvm_scoreboard;
                                         4'b0101: tx.RES = { {`DW{1'b0}}, ~(tx.OPA ^ tx.OPB) };      // XNOR
                                         4'b0110: tx.RES = { {`DW{1'b0}}, ~tx.OPA };                 // NOT_A
                                         4'b0111: tx.RES = { {`DW{1'b0}}, ~tx.OPB };                 // NOT_B
-                                        4'b1000: tx.RES = { {`DW{1'b0}}, tx.OPA >> 1 };            // SHR1_A
-                                        4'b1001: tx.RES = { {`DW{1'b0}}, tx.OPA << 1 };            // SHL1_A
-                                        4'b1010: tx.RES = { {`DW{1'b0}}, tx.OPB >> 1 };            // SHR1_B
-                                        4'b1011: tx.RES = { {`DW{1'b0}}, tx.OPB << 1 };            // SHL1_B
+                                        4'b1000: tx.RES = { {`DW{1'b0}}, tx.OPA >> 1 };             // SHR1_A
+                                        4'b1001: tx.RES = { {`DW{1'b0}}, tx.OPA << 1 };             // SHL1_A
+                                        4'b1010: tx.RES = { {`DW{1'b0}}, tx.OPB >> 1 };             // SHR1_B
+                                        4'b1011: tx.RES = { {`DW{1'b0}}, tx.OPB << 1 };             // SHL1_B
                                         4'b1100: begin // ROL_A_B
                                                 if (tx.OPB[7:4] != 4'b0000) begin
                                                         tx.ERR = 1'b1;
