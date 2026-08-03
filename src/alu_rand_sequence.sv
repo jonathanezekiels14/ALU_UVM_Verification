@@ -24,7 +24,7 @@ class alu_rand_sequence extends alu_base_sequence;
       tx = alu_transaction::type_id::create("tx");
       start_item(tx);
       assert(tx.randomize() with {
-        INP_VALID == 2'b11;
+	      INP_VALID < 4;
       }) else `uvm_error("SEQ", "Transaction randomization failed!");
       finish_item(tx);
     end

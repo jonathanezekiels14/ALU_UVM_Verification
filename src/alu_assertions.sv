@@ -23,9 +23,7 @@ module alu_assertions (
     default input #1ns output #1ns;
   endclocking
 
-  // =========================================================================
   // 1. X/Z Propagation Checks on Control Signals
-  // =========================================================================
   property p_no_x_control;
     disable iff (RST)
       !$isunknown({CE, INP_VALID, MODE, CMD});
@@ -34,10 +32,7 @@ module alu_assertions (
   assert_no_x_control: assert property (p_no_x_control)
     else $error("SVA_ERROR: Unknown (X/Z) detected on critical ALU control signals!");
 
-  // =========================================================================
   // 2. Clock Enable (CE) Stability Check
-  // When CE is low, registered outputs must hold their previous values.
-  // =========================================================================
   property p_ce_hold;
     disable iff (RST)
       (!CE) |-> ($stable(RES) && $stable(ERR) && $stable(COUT) && $stable(OFLOW) && $stable(G) && $stable(L) && $stable(E));
@@ -46,10 +41,7 @@ module alu_assertions (
   assert_ce_hold: assert property (p_ce_hold)
     else $error("SVA_ERROR: ALU outputs changed while Clock Enable (CE) was low!");
 
-  // =========================================================================
   // 3. Comparator Flags Mutual Exclusivity Check
-  // G (Greater), L (Lesser), and E (Equal) cannot be asserted simultaneously.
-  // =========================================================================
   property p_flag_mutual_exclusion;
     disable iff (RST)
       $onehot0({G, L, E});
@@ -58,10 +50,7 @@ module alu_assertions (
   assert_flag_mutual_exclusion: assert property (p_flag_mutual_exclusion)
     else $error("SVA_ERROR: Comparator flags (G, L, E) violate mutual exclusivity!");
 
-  // =========================================================================
   // 4. Command Range Sanity Check
-  // Mode 0 supports commands 0-12, Mode 1 supports commands 0-10.
-  // =========================================================================
   property p_valid_cmd_range;
     disable iff (RST)
       (MODE == 0) -> (CMD <= 12) &&
@@ -71,9 +60,7 @@ module alu_assertions (
   assert_valid_cmd_range: assert property (p_valid_cmd_range)
     else $error("SVA_ERROR: Invalid ALU command code executed for the current MODE!");
 
-  // =========================================================================
   // 5. Functional Coverage Properties (Coverpoints for SVA)
-  // =========================================================================
   cover_arithmetic_mode: cover property (disable iff (RST) (MODE == 0 && CE));
   cover_logical_mode:    cover property (disable iff (RST) (MODE == 1 && CE));
   cover_overflow_event:  cover property (disable iff (RST) (OFLOW == 1));
