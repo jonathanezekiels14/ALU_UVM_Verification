@@ -1,0 +1,3 @@
+# wlf2vcd alu_sanity_test.wlf -o alu_sanity_test.vcd
+# ** Error: Unable to open WLF file "alu_sanity_test.wlf".
+#  exit

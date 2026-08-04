@@ -1,16 +1,13 @@
-// Declare analysis implementation ports for separate input and output monitors
-`uvm_analysis_imp_decl(_inp)
-`uvm_analysis_imp_decl(_out)
-
 class alu_scoreboard extends uvm_scoreboard;
         `uvm_component_utils(alu_scoreboard)
 
-        // Analysis implementation ports
-        uvm_analysis_imp_inp #(alu_transaction, alu_scoreboard) inp_imp;
-        uvm_analysis_imp_out #(alu_transaction, alu_scoreboard) out_imp;
+        // Replace analysis imps with analysis exports
+        uvm_analysis_export #(alu_transaction) inp_export;
+        uvm_analysis_export #(alu_transaction) out_export;
 
-        // Queue to store expected transactions predicted by the reference model
-        alu_transaction exp_queue[$];
+        // TLM Analysis FIFOs to buffer transactions
+        uvm_tlm_analysis_fifo #(alu_transaction) inp_fifo;
+        uvm_tlm_analysis_fifo #(alu_transaction) out_fifo;
 
         // Statistics counters
         int match_count = 0;
@@ -22,18 +19,40 @@ class alu_scoreboard extends uvm_scoreboard;
 
         function void build_phase(uvm_phase phase);
                 super.build_phase(phase);
-                inp_imp = new("inp_imp", this);
-                out_imp = new("out_imp", this);
+                // Instantiate exports and FIFOs
+                inp_export = new("inp_export", this);
+                out_export = new("out_export", this);
+                inp_fifo   = new("inp_fifo", this);
+                out_fifo   = new("out_fifo", this);
         endfunction
 
-        // Receives input transaction, predicts expected output using reference model, and pushes to queue
-        virtual function void write_inp(alu_transaction req);
-                alu_transaction exp_tx;
-                $cast(exp_tx, req.clone()); // Create an independent copy for the reference model
-
-                predict_output(exp_tx);
-                exp_queue.push_back(exp_tx);
+        function void connect_phase(uvm_phase phase);
+                super.connect_phase(phase);
+                // Connect exports directly to the FIFOs
+                inp_export.connect(inp_fifo.analysis_export);
+                out_export.connect(out_fifo.analysis_export);
         endfunction
+
+        // The run_phase consumes time and natively handles the 1-cycle delay
+        task run_phase(uvm_phase phase);
+                alu_transaction req_tx, exp_tx, act_tx;
+
+                forever begin
+                        // 1. Get input transaction (blocks until input monitor sends one)
+                        inp_fifo.get(req_tx);
+
+                        // 2. Clone and run reference model to predict expected output
+                        $cast(exp_tx, req_tx.clone());
+                        predict_output(exp_tx);
+
+                        // 3. Get actual transaction (blocks until output monitor sends one)
+                        // This blocking call natively handles the 1 clock cycle delay
+                        out_fifo.get(act_tx);
+
+                        // 4. Compare expected vs actual
+                        compare_tx(exp_tx, act_tx);
+                end
+        endtask
 
         // Reference Model Logic matching the ALU Specification
         virtual function void predict_output(alu_transaction tx);
@@ -113,17 +132,17 @@ class alu_scoreboard extends uvm_scoreboard;
                                 // --- LOGICAL OPERATIONS (MODE = 0) ---
                                 case (tx.CMD)
                                         4'b0000: tx.RES = { {`DW{1'b0}}, tx.OPA & tx.OPB };        // AND
-                                        4'b0001: tx.RES = { {`DW{1'b0}}, ~(tx.OPA & tx.OPB) };      // NAND
+                                        4'b0001: tx.RES = { {`DW{1'b0}}, ~(tx.OPA & tx.OPB) };     // NAND
                                         4'b0010: tx.RES = { {`DW{1'b0}}, tx.OPA | tx.OPB };        // OR
-                                        4'b0011: tx.RES = { {`DW{1'b0}}, ~(tx.OPA | tx.OPB) };      // NOR
+                                        4'b0011: tx.RES = { {`DW{1'b0}}, ~(tx.OPA | tx.OPB) };     // NOR
                                         4'b0100: tx.RES = { {`DW{1'b0}}, tx.OPA ^ tx.OPB };        // XOR
-                                        4'b0101: tx.RES = { {`DW{1'b0}}, ~(tx.OPA ^ tx.OPB) };      // XNOR
-                                        4'b0110: tx.RES = { {`DW{1'b0}}, ~tx.OPA };                 // NOT_A
-                                        4'b0111: tx.RES = { {`DW{1'b0}}, ~tx.OPB };                 // NOT_B
-                                        4'b1000: tx.RES = { {`DW{1'b0}}, tx.OPA >> 1 };             // SHR1_A
-                                        4'b1001: tx.RES = { {`DW{1'b0}}, tx.OPA << 1 };             // SHL1_A
-                                        4'b1010: tx.RES = { {`DW{1'b0}}, tx.OPB >> 1 };             // SHR1_B
-                                        4'b1011: tx.RES = { {`DW{1'b0}}, tx.OPB << 1 };             // SHL1_B
+                                        4'b0101: tx.RES = { {`DW{1'b0}}, ~(tx.OPA ^ tx.OPB) };     // XNOR
+                                        4'b0110: tx.RES = { {`DW{1'b0}}, ~tx.OPA };                // NOT_A
+                                        4'b0111: tx.RES = { {`DW{1'b0}}, ~tx.OPB };                // NOT_B
+                                        4'b1000: tx.RES = { {`DW{1'b0}}, tx.OPA >> 1 };            // SHR1_A
+                                        4'b1001: tx.RES = { {`DW{1'b0}}, tx.OPA << 1 };            // SHL1_A
+                                        4'b1010: tx.RES = { {`DW{1'b0}}, tx.OPB >> 1 };            // SHR1_B
+                                        4'b1011: tx.RES = { {`DW{1'b0}}, tx.OPB << 1 };            // SHL1_B
                                         4'b1100: begin // ROL_A_B
                                                 if (tx.OPB[7:4] != 4'b0000) begin
                                                         tx.ERR = 1'b1;
@@ -148,30 +167,21 @@ class alu_scoreboard extends uvm_scoreboard;
                 end
         endfunction
 
-        // Receives actual transaction from output monitor and compares against expected prediction queue
-        virtual function void write_out(alu_transaction act_tx);
-                alu_transaction exp_tx;
-
-                if (exp_queue.size() > 0) begin
-                        exp_tx = exp_queue.pop_front();
-
-                        // Compare critical fields (RES, Flags, ERR)
-                        if ((act_tx.RES === exp_tx.RES) &&
-                            (act_tx.COUT === exp_tx.COUT) &&
-                            (act_tx.OFLOW === exp_tx.OFLOW) &&
-                            (act_tx.G === exp_tx.G) &&
-                            (act_tx.E === exp_tx.E) &&
-                            (act_tx.L === exp_tx.L) &&
-                            (act_tx.ERR === exp_tx.ERR)) begin
-                                match_count++;
-                                `uvm_info("SCBD_MATCH", $sformatf("PASS! Match Count: %0d", match_count), UVM_HIGH)
-                        end else begin
-                                mismatch_count++;
-                                `uvm_error("SCBD_MISMATCH", $sformatf("MISMATCH #%0d!\nExpected:\n%s\nActual:\n%s",
-                                           mismatch_count, exp_tx.sprint(), act_tx.sprint()))
-                        end
+        // Cleanly extracted comparison logic
+        virtual function void compare_tx(alu_transaction exp_tx, alu_transaction act_tx);
+                if ((act_tx.RES === exp_tx.RES) &&
+                    (act_tx.COUT === exp_tx.COUT) &&
+                    (act_tx.OFLOW === exp_tx.OFLOW) &&
+                    (act_tx.G === exp_tx.G) &&
+                    (act_tx.E === exp_tx.E) &&
+                    (act_tx.L === exp_tx.L) &&
+                    (act_tx.ERR === exp_tx.ERR)) begin
+                        match_count++;
+                        `uvm_info("SCBD_MATCH", $sformatf("PASS! Match Count: %0d", match_count), UVM_HIGH)
                 end else begin
-                        `uvm_error("SCBD_UNEXPECTED", "Received output monitor transaction but expected queue is empty")
+                        mismatch_count++;
+                        `uvm_error("SCBD_MISMATCH", $sformatf("MISMATCH #%0d!\nExpected:\n%s\nActual:\n%s",
+                                           mismatch_count, exp_tx.sprint(), act_tx.sprint()))
                 end
         endfunction
 

@@ -12,7 +12,7 @@ class alu_sanity_sequence extends alu_base_sequence;
     tx = alu_transaction::type_id::create("tx");
     start_item(tx);
     assert(tx.randomize() with {
-      MODE == 0;
+      MODE == 1;
       CMD == 0; // ADD
       INP_VALID == 2'b11;
       OPA == 10;
@@ -21,7 +21,7 @@ class alu_sanity_sequence extends alu_base_sequence;
     finish_item(tx);
 
     // 2. Arithmetic Mode & Command Switching Sanity
-    repeat (5) begin
+	repeat (5) begin
       tx = alu_transaction::type_id::create("tx");
       start_item(tx);
       assert(tx.randomize() with {
@@ -43,5 +43,6 @@ class alu_sanity_sequence extends alu_base_sequence;
       });
       finish_item(tx);
     end
+
   endtask
 endclass

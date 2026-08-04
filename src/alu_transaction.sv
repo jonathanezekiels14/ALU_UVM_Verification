@@ -29,7 +29,7 @@ class alu_transaction extends uvm_sequence_item;
         `uvm_object_utils_end
 
         constraint set_ce {
-                soft CE dist { 1 := 9, 0 := 1 };
+                soft CE == 1;
         }
 
         constraint set_cmd {

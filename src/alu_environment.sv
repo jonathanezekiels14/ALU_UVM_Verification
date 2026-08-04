@@ -27,10 +27,10 @@ class alu_env extends uvm_env;
     super.connect_phase(phase);
 
     // 1. Connect Input Agent to Scoreboard Input Port
-    in_agent.agent_inp_port.connect(scbd.inp_imp);
+    in_agent.agent_inp_port.connect(scbd.inp_export);
 
     // 2. Connect Output Agent to Scoreboard Output Port
-    out_agent.agent_out_port.connect(scbd.out_imp);
+    out_agent.agent_out_port.connect(scbd.out_export);
 
     // 3. Connect Input Agent to Coverage Subscriber (or connect output agent depending on preference)
     in_agent.agent_inp_port.connect(cov_sub.analysis_export);

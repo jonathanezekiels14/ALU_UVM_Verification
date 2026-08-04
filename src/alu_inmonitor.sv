@@ -91,6 +91,7 @@ class alu_inpmon extends uvm_monitor;
                                         timeout_tx.CIN = current_cin;
                                         timeout_tx.CE = current_ce;
                                         timeout_tx.timeout_occurred = 1'b1;
+
                                         inp_monitor_port.write(timeout_tx);
 
                                         has_oprd1 = 0;

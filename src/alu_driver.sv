@@ -66,18 +66,26 @@ class alu_driver extends uvm_driver #(alu_transaction);
                 vif.inp_drv_cb.CE <= 0;
         endtask
 
-        task drive(alu_transaction drv_trans);
-                // Wait for clock edge
-                @(vif.inp_drv_cb);
-                
-                // Drive transaction to interface
-                vif.inp_drv_cb.OPA <= drv_trans.OPA;
-                vif.inp_drv_cb.OPB <= drv_trans.OPB;
-                vif.inp_drv_cb.INP_VALID <= drv_trans.INP_VALID;
-                vif.inp_drv_cb.CMD <= drv_trans.CMD;
-                vif.inp_drv_cb.MODE <= drv_trans.MODE;
-                vif.inp_drv_cb.CIN <= drv_trans.CIN;
-                vif.inp_drv_cb.CE <= drv_trans.CE;
-        endtask
+	task drive(alu_transaction drv_trans);
+    		// Wait for clock edge
+    		@(vif.inp_drv_cb);
+    
+    		// Drive transaction to interface
+    		vif.inp_drv_cb.OPA       <= drv_trans.OPA;
+    		vif.inp_drv_cb.OPB       <= drv_trans.OPB;
+    		vif.inp_drv_cb.INP_VALID <= drv_trans.INP_VALID;
+    		vif.inp_drv_cb.CMD       <= drv_trans.CMD;
+    		vif.inp_drv_cb.MODE      <= drv_trans.MODE;
+    		vif.inp_drv_cb.CIN       <= drv_trans.CIN;
+    		vif.inp_drv_cb.CE        <= drv_trans.CE;
 
+    		// Log driven values
+    		`uvm_info("ALU_DRIVER", $sformatf("Driven Transaction -> OPA: 'h%0h | OPB: 'h%0h | INP_VALID: 'b%0b | CMD: %0d | MODE: %0b | CIN: %0b | CE: %0b", drv_trans.OPA, 
+                                     drv_trans.OPB, 
+                                     drv_trans.INP_VALID, 
+                                     drv_trans.CMD, 
+                                     drv_trans.MODE, 
+                                     drv_trans.CIN, 
+                                     drv_trans.CE), UVM_LOW)
+		endtask	
 endclass
