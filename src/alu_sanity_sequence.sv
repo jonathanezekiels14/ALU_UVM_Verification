@@ -11,24 +11,26 @@ class alu_sanity_sequence extends alu_base_sequence;
     // 1. Reset / Sanity check transaction
     tx = alu_transaction::type_id::create("tx");
     start_item(tx);
-    assert(tx.randomize() with {
-      MODE == 1;
-      CMD == 0; // ADD
+    if (!tx.randomize() with {
+      CE == 1'b1;         // FIX: Guarantee execution
+      MODE == 1'b1;       // Arithmetic Mode
+      CMD == 4'b0000;     // ADD
       INP_VALID == 2'b11;
       OPA == 10;
       OPB == 20;
-    });
+    }) `uvm_error("SEQ", "Transaction 1 randomization failed!")
     finish_item(tx);
 
-    // 2. Arithmetic Mode & Command Switching Sanity
-	repeat (5) begin
+    // 2. Arithmetic Mode Sanity
+    repeat (5) begin
       tx = alu_transaction::type_id::create("tx");
       start_item(tx);
-      assert(tx.randomize() with {
-        MODE == 0;
-        CMD inside {[0:12]};
+      if (!tx.randomize() with {
+        CE == 1'b1;         // FIX: Guarantee execution
+        MODE == 1'b1;       // FIX: Swapped to 1 to match Arithmetic Mode
+        CMD inside {[0:10]}; // Valid commands for Arithmetic are 0-10
         INP_VALID == 2'b11;
-      });
+      }) `uvm_error("SEQ", "Arithmetic transaction randomization failed!")
       finish_item(tx);
     end
 
@@ -36,11 +38,12 @@ class alu_sanity_sequence extends alu_base_sequence;
     repeat (5) begin
       tx = alu_transaction::type_id::create("tx");
       start_item(tx);
-      assert(tx.randomize() with {
-        MODE == 1;
-        CMD inside {[0:10]};
+      if (!tx.randomize() with {
+        CE == 1'b1;         // FIX: Guarantee execution
+        MODE == 1'b0;       // FIX: Swapped to 0 to match Logical Mode
+        CMD inside {[0:13]}; // FIX: Extended to 13 to include ROR_A_B
         INP_VALID == 2'b11;
-      });
+      }) `uvm_error("SEQ", "Logical transaction randomization failed!")
       finish_item(tx);
     end
 

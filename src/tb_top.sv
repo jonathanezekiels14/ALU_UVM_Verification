@@ -50,7 +50,7 @@ module tb_top;
     vif.OPB       = '0;
 
     vif.RST       = 1'b1;
-    repeat (2) @(posedge CLK);
+    repeat(2) @(posedge CLK);
     vif.RST       = 1'b0;
     `uvm_info("TB_TOP", "Initial Reset Released.", UVM_LOW)
   end

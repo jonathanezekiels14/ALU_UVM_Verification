@@ -15,12 +15,12 @@ interface alu_interface (input logic CLK);
         endclocking
 
         clocking inp_mon_cb @(posedge CLK);
-                default input #1step output #1ns;
+                default input #1 output #1;
                 input OPA, OPB, RST, CE, MODE, CIN, CMD, INP_VALID;
         endclocking
 
         clocking out_mon_cb @(posedge CLK);
-                default input #1step output #1ns;
+                default input #1 output #1;
                 input OPA, OPB, RST, CE, MODE, CIN, CMD, INP_VALID, RES, COUT, OFLOW, G, L, E, ERR;
         endclocking
 

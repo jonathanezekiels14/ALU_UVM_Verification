@@ -69,6 +69,7 @@ class alu_scoreboard extends uvm_scoreboard;
                 end
 
                 // Default outputs/flags initialization
+                tx.RES = 'b0;    // FIX: Must clear RES to prevent garbage matching on CMP
                 tx.ERR = 1'b0;
                 tx.COUT = 1'b0;
                 tx.OFLOW = 1'b0;
@@ -87,27 +88,39 @@ class alu_scoreboard extends uvm_scoreboard;
                 if (tx.CE == 1'b1) begin
                         if (tx.MODE == 1'b1) begin
                                 // --- ARITHMETIC OPERATIONS (MODE = 1) ---
+                                logic [8:0] temp_sum; // 9-bit temp variable for carry extraction
+
                                 case (tx.CMD)
                                         4'b0000: begin // ADD
-                                                {tx.COUT, tx.RES} = {1'b0, tx.OPA} + {1'b0, tx.OPB};
+                                                temp_sum = tx.OPA + tx.OPB;
+                                                tx.COUT = temp_sum[8];
+                                                tx.RES = temp_sum;
                                         end
                                         4'b0001: begin // SUB
-                                                {tx.OFLOW, tx.RES} = {1'b0, tx.OPA} - {1'b0, tx.OPB};
+                                                tx.OFLOW = (tx.OPA < tx.OPB) ? 1'b1 : 1'b0;
+                                                tx.RES = tx.OPA - tx.OPB;
                                         end
                                         4'b0010: begin // ADD_CIN
-                                                {tx.COUT, tx.RES} = {1'b0, tx.OPA} + {1'b0, tx.OPB} + {8'b0, tx.CIN};
+                                                temp_sum = tx.OPA + tx.OPB + tx.CIN;
+                                                tx.COUT = temp_sum[8];
+                                                tx.RES = temp_sum;
                                         end
                                         4'b0011: begin // SUB_CIN
-                                                {tx.OFLOW, tx.RES} = {1'b0, tx.OPA} - {1'b0, tx.OPB} - {8'b0, tx.CIN};
+                                                tx.OFLOW = (tx.OPA < (tx.OPB + tx.CIN)) ? 1'b1 : 1'b0;
+                                                tx.RES = tx.OPA - tx.OPB - tx.CIN;
                                         end
                                         4'b0100: begin // INC_A
-                                                tx.RES = tx.OPA + 1'b1;
+                                                temp_sum = tx.OPA + 1'b1;
+                                                tx.COUT = temp_sum[8];
+                                                tx.RES = temp_sum;
                                         end
                                         4'b0101: begin // DEC_A
                                                 tx.RES = tx.OPA - 1'b1;
                                         end
                                         4'b0110: begin // INC_B
-                                                tx.RES = tx.OPB + 1'b1;
+                                                temp_sum = tx.OPB + 1'b1;
+                                                tx.COUT = temp_sum[8];
+                                                tx.RES = temp_sum;
                                         end
                                         4'b0111: begin // DEC_B
                                                 tx.RES = tx.OPB - 1'b1;
@@ -116,6 +129,7 @@ class alu_scoreboard extends uvm_scoreboard;
                                                 if (tx.OPA > tx.OPB)      tx.G = 1'b1;
                                                 else if (tx.OPA < tx.OPB) tx.L = 1'b1;
                                                 else                      tx.E = 1'b1;
+                                                // RES remains 0 as set by default initialization
                                         end
                                         4'b1001: begin // MUL_INC
                                                 tx.RES = (tx.OPA + 1'b1) * (tx.OPB + 1'b1);
@@ -130,6 +144,7 @@ class alu_scoreboard extends uvm_scoreboard;
                         end
                         else begin
                                 // --- LOGICAL OPERATIONS (MODE = 0) ---
+                                // (Your logical operations are perfectly fine as written)
                                 case (tx.CMD)
                                         4'b0000: tx.RES = { {`DW{1'b0}}, tx.OPA & tx.OPB };        // AND
                                         4'b0001: tx.RES = { {`DW{1'b0}}, ~(tx.OPA & tx.OPB) };     // NAND
@@ -166,7 +181,6 @@ class alu_scoreboard extends uvm_scoreboard;
                         end
                 end
         endfunction
-
         // Cleanly extracted comparison logic
         virtual function void compare_tx(alu_transaction exp_tx, alu_transaction act_tx);
                 if ((act_tx.RES === exp_tx.RES) &&

@@ -22,36 +22,36 @@ c6:[{dummy:0}
 ]}
 ,{anchor:'cvg39',cr:'m',items:[{s:'5',x:'FC',z:'((oprd1_valid && ~oprd2_valid) || (~oprd1_valid && oprd2_valid))',c:'R',p:'0.00',d:'0',F:'2'}
 ,{}
-,{z:'oprd1_valid',c:'r',r:'\'_1\' hit but \'_0\' is not hit',i:'Hit \'_0\' for output ->1'}
-,{z:'oprd2_valid',c:'r',r:'\'_1\' hit but \'_0\' is not hit',i:'Hit \'_0\' for output ->1'}
+,{z:'oprd1_valid',c:'r',r:'No hits',i:'Hit \'_0\' and \'_1\' for different outputs'}
+,{z:'oprd2_valid',c:'r',r:'No hits',i:'Hit \'_0\' and \'_1\' for different outputs'}
 ,{}
 ,{n:'1',z:'oprd1_valid_0',t:'c',h1:'0',h2:'0',c1:'~(~oprd1_valid && oprd2_valid), oprd2_valid',c2:'~(~oprd1_valid && oprd2_valid), oprd2_valid'}
-,{n:'2',z:'oprd1_valid_1',t:'c',h1:'1',h2:'0',c1:'~oprd2_valid, ~(oprd1_valid && ~oprd2_valid)',c2:'~oprd2_valid, ~(oprd1_valid && ~oprd2_valid)'}
+,{n:'2',z:'oprd1_valid_1',t:'c',h1:'0',h2:'0',c1:'~oprd2_valid, ~(oprd1_valid && ~oprd2_valid)',c2:'~oprd2_valid, ~(oprd1_valid && ~oprd2_valid)'}
 ,{n:'3',z:'oprd2_valid_0',t:'c',h1:'0',h2:'0',c1:'oprd1_valid, ~oprd1_valid',c2:'oprd1_valid, ~oprd1_valid'}
-,{n:'4',z:'oprd2_valid_1',t:'c',h1:'1',h2:'0',c1:'oprd1_valid, ~oprd1_valid',c2:'oprd1_valid, ~oprd1_valid'}
+,{n:'4',z:'oprd2_valid_1',t:'c',h1:'0',h2:'0',c1:'oprd1_valid, ~oprd1_valid',c2:'oprd1_valid, ~oprd1_valid'}
 ]}
-,{anchor:'cvg41',items:[{s:'3',x:'FC',z:'((MODE && oprd1_valid) && oprd2_valid)',c:'R',p:'33.33',d:'0',F:'1'}
+,{anchor:'cvg41',items:[{s:'3',x:'FC',z:'((MODE && oprd1_valid) && oprd2_valid)',c:'Y',p:'66.66',d:'0',F:'1'}
 ,{}
 ,{z:'MODE',c:'g',r:'',i:''}
-,{z:'oprd1_valid',c:'r',r:'\'_0\' not hit',i:'Hit \'_0\''}
+,{z:'oprd1_valid',c:'g',r:'',i:''}
 ,{z:'oprd2_valid',c:'r',r:'\'_0\' not hit',i:'Hit \'_0\''}
 ,{}
 ,{n:'1',z:'MODE_0',h1:'1',t:'c',c1:'-'}
 ,{n:'2',z:'MODE_1',h1:'1',t:'c',c1:'(oprd2_valid && oprd1_valid)'}
-,{n:'3',z:'oprd1_valid_0',h1:'0',t:'c',c1:'MODE'}
+,{n:'3',z:'oprd1_valid_0',h1:'1',t:'c',c1:'MODE'}
 ,{n:'4',z:'oprd1_valid_1',h1:'1',t:'c',c1:'(oprd2_valid && MODE)'}
 ,{n:'5',z:'oprd2_valid_0',h1:'0',t:'c',c1:'(MODE && oprd1_valid)'}
 ,{n:'6',z:'oprd2_valid_1',h1:'1',t:'c',c1:'(MODE && oprd1_valid)'}
 ]}
 ,{anchor:'cvg43',items:[{s:'3',x:'FC',z:'((~MODE && oprd1_valid) && oprd2_valid)',c:'R',p:'33.33',d:'0',F:'1'}
 ,{}
-,{z:'MODE',c:'r',r:'\'_1\' not hit',i:'Hit \'_1\''}
-,{z:'oprd1_valid',c:'g',r:'',i:''}
+,{z:'MODE',c:'g',r:'',i:''}
+,{z:'oprd1_valid',c:'r',r:'\'_0\' not hit',i:'Hit \'_0\''}
 ,{z:'oprd2_valid',c:'r',r:'\'_0\' not hit',i:'Hit \'_0\''}
 ,{}
 ,{n:'1',z:'MODE_0',h1:'1',t:'c',c1:'(oprd2_valid && oprd1_valid)'}
-,{n:'2',z:'MODE_1',h1:'0',t:'c',c1:'-'}
-,{n:'3',z:'oprd1_valid_0',h1:'1',t:'c',c1:'~MODE'}
+,{n:'2',z:'MODE_1',h1:'1',t:'c',c1:'-'}
+,{n:'3',z:'oprd1_valid_0',h1:'0',t:'c',c1:'~MODE'}
 ,{n:'4',z:'oprd1_valid_1',h1:'1',t:'c',c1:'(oprd2_valid && ~MODE)'}
 ,{n:'5',z:'oprd2_valid_0',h1:'0',t:'c',c1:'(~MODE && oprd1_valid)'}
 ,{n:'6',z:'oprd2_valid_1',h1:'1',t:'c',c1:'(~MODE && oprd1_valid)'}
@@ -74,19 +74,19 @@ c6:[{dummy:0}
 ]}
 ,{anchor:'cvg47',cr:'m',items:[{s:'3',x:'FC',z:'(((oprd2[4] | oprd2[5]) | oprd2[6]) | oprd2[7])',c:'R',p:'0.00',d:'0',F:'1'}
 ,{}
-,{z:'oprd2[4]',c:'r',r:'No hits',i:'Hit \'_0\' and \'_1\''}
-,{z:'oprd2[5]',c:'r',r:'No hits',i:'Hit \'_0\' and \'_1\''}
-,{z:'oprd2[6]',c:'r',r:'No hits',i:'Hit \'_0\' and \'_1\''}
-,{z:'oprd2[7]',c:'r',r:'No hits',i:'Hit \'_0\' and \'_1\''}
+,{z:'oprd2[4]',c:'r',r:'\'_0\' not hit',i:'Hit \'_0\''}
+,{z:'oprd2[5]',c:'r',r:'\'_0\' not hit',i:'Hit \'_0\''}
+,{z:'oprd2[6]',c:'r',r:'\'_0\' not hit',i:'Hit \'_0\''}
+,{z:'oprd2[7]',c:'r',r:'\'_0\' not hit',i:'Hit \'_0\''}
 ,{}
 ,{n:'1',z:'oprd2[4]_0',h1:'0',t:'c',c1:'(~oprd2[7] && ~oprd2[6] && ~oprd2[5])'}
-,{n:'2',z:'oprd2[4]_1',h1:'0',t:'c',c1:'(~oprd2[7] && ~oprd2[6] && ~oprd2[5])'}
+,{n:'2',z:'oprd2[4]_1',h1:'1',t:'c',c1:'(~oprd2[7] && ~oprd2[6] && ~oprd2[5])'}
 ,{n:'3',z:'oprd2[5]_0',h1:'0',t:'c',c1:'(~oprd2[7] && ~oprd2[6] && ~oprd2[4])'}
-,{n:'4',z:'oprd2[5]_1',h1:'0',t:'c',c1:'(~oprd2[7] && ~oprd2[6] && ~oprd2[4])'}
+,{n:'4',z:'oprd2[5]_1',h1:'1',t:'c',c1:'(~oprd2[7] && ~oprd2[6] && ~oprd2[4])'}
 ,{n:'5',z:'oprd2[6]_0',h1:'0',t:'c',c1:'(~oprd2[7] && ~(oprd2[4] | oprd2[5]))'}
-,{n:'6',z:'oprd2[6]_1',h1:'0',t:'c',c1:'(~oprd2[7] && ~(oprd2[4] | oprd2[5]))'}
+,{n:'6',z:'oprd2[6]_1',h1:'1',t:'c',c1:'(~oprd2[7] && ~(oprd2[4] | oprd2[5]))'}
 ,{n:'7',z:'oprd2[7]_0',h1:'0',t:'c',c1:'~((oprd2[4] | oprd2[5]) | oprd2[6])'}
-,{n:'8',z:'oprd2[7]_1',h1:'0',t:'c',c1:'~((oprd2[4] | oprd2[5]) | oprd2[6])'}
+,{n:'8',z:'oprd2[7]_1',h1:'1',t:'c',c1:'~((oprd2[4] | oprd2[5]) | oprd2[6])'}
 ]}
 ],
 c11:[{dummy:0}
@@ -112,36 +112,36 @@ c11:[{dummy:0}
 ]}
 ,{anchor:'cvg39',cr:'m',items:[{s:'5',x:'FC',z:'((oprd1_valid && ~oprd2_valid) || (~oprd1_valid && oprd2_valid))',c:'R',p:'0.00',d:'0',F:'2'}
 ,{}
-,{z:'oprd1_valid',c:'r',r:'\'_1\' hit but \'_0\' is not hit',i:'Hit \'_0\' for output ->1'}
-,{z:'oprd2_valid',c:'r',r:'\'_1\' hit but \'_0\' is not hit',i:'Hit \'_0\' for output ->1'}
+,{z:'oprd1_valid',c:'r',r:'No hits',i:'Hit \'_0\' and \'_1\' for different outputs'}
+,{z:'oprd2_valid',c:'r',r:'No hits',i:'Hit \'_0\' and \'_1\' for different outputs'}
 ,{}
 ,{n:'1',z:'oprd1_valid_0',t:'c',h1:'0',h2:'0',c1:'~(~oprd1_valid && oprd2_valid), oprd2_valid',c2:'~(~oprd1_valid && oprd2_valid), oprd2_valid'}
-,{n:'2',z:'oprd1_valid_1',t:'c',h1:'1',h2:'0',c1:'~oprd2_valid, ~(oprd1_valid && ~oprd2_valid)',c2:'~oprd2_valid, ~(oprd1_valid && ~oprd2_valid)'}
+,{n:'2',z:'oprd1_valid_1',t:'c',h1:'0',h2:'0',c1:'~oprd2_valid, ~(oprd1_valid && ~oprd2_valid)',c2:'~oprd2_valid, ~(oprd1_valid && ~oprd2_valid)'}
 ,{n:'3',z:'oprd2_valid_0',t:'c',h1:'0',h2:'0',c1:'oprd1_valid, ~oprd1_valid',c2:'oprd1_valid, ~oprd1_valid'}
-,{n:'4',z:'oprd2_valid_1',t:'c',h1:'1',h2:'0',c1:'oprd1_valid, ~oprd1_valid',c2:'oprd1_valid, ~oprd1_valid'}
+,{n:'4',z:'oprd2_valid_1',t:'c',h1:'0',h2:'0',c1:'oprd1_valid, ~oprd1_valid',c2:'oprd1_valid, ~oprd1_valid'}
 ]}
-,{anchor:'cvg41',items:[{s:'3',x:'FC',z:'((MODE && oprd1_valid) && oprd2_valid)',c:'R',p:'33.33',d:'0',F:'1'}
+,{anchor:'cvg41',items:[{s:'3',x:'FC',z:'((MODE && oprd1_valid) && oprd2_valid)',c:'Y',p:'66.66',d:'0',F:'1'}
 ,{}
 ,{z:'MODE',c:'g',r:'',i:''}
-,{z:'oprd1_valid',c:'r',r:'\'_0\' not hit',i:'Hit \'_0\''}
+,{z:'oprd1_valid',c:'g',r:'',i:''}
 ,{z:'oprd2_valid',c:'r',r:'\'_0\' not hit',i:'Hit \'_0\''}
 ,{}
 ,{n:'1',z:'MODE_0',h1:'1',t:'c',c1:'-'}
 ,{n:'2',z:'MODE_1',h1:'1',t:'c',c1:'(oprd2_valid && oprd1_valid)'}
-,{n:'3',z:'oprd1_valid_0',h1:'0',t:'c',c1:'MODE'}
+,{n:'3',z:'oprd1_valid_0',h1:'1',t:'c',c1:'MODE'}
 ,{n:'4',z:'oprd1_valid_1',h1:'1',t:'c',c1:'(oprd2_valid && MODE)'}
 ,{n:'5',z:'oprd2_valid_0',h1:'0',t:'c',c1:'(MODE && oprd1_valid)'}
 ,{n:'6',z:'oprd2_valid_1',h1:'1',t:'c',c1:'(MODE && oprd1_valid)'}
 ]}
 ,{anchor:'cvg43',items:[{s:'3',x:'FC',z:'((~MODE && oprd1_valid) && oprd2_valid)',c:'R',p:'33.33',d:'0',F:'1'}
 ,{}
-,{z:'MODE',c:'r',r:'\'_1\' not hit',i:'Hit \'_1\''}
-,{z:'oprd1_valid',c:'g',r:'',i:''}
+,{z:'MODE',c:'g',r:'',i:''}
+,{z:'oprd1_valid',c:'r',r:'\'_0\' not hit',i:'Hit \'_0\''}
 ,{z:'oprd2_valid',c:'r',r:'\'_0\' not hit',i:'Hit \'_0\''}
 ,{}
 ,{n:'1',z:'MODE_0',h1:'1',t:'c',c1:'(oprd2_valid && oprd1_valid)'}
-,{n:'2',z:'MODE_1',h1:'0',t:'c',c1:'-'}
-,{n:'3',z:'oprd1_valid_0',h1:'1',t:'c',c1:'~MODE'}
+,{n:'2',z:'MODE_1',h1:'1',t:'c',c1:'-'}
+,{n:'3',z:'oprd1_valid_0',h1:'0',t:'c',c1:'~MODE'}
 ,{n:'4',z:'oprd1_valid_1',h1:'1',t:'c',c1:'(oprd2_valid && ~MODE)'}
 ,{n:'5',z:'oprd2_valid_0',h1:'0',t:'c',c1:'(~MODE && oprd1_valid)'}
 ,{n:'6',z:'oprd2_valid_1',h1:'1',t:'c',c1:'(~MODE && oprd1_valid)'}
@@ -164,19 +164,19 @@ c11:[{dummy:0}
 ]}
 ,{anchor:'cvg47',cr:'m',items:[{s:'3',x:'FC',z:'(((oprd2[4] | oprd2[5]) | oprd2[6]) | oprd2[7])',c:'R',p:'0.00',d:'0',F:'1'}
 ,{}
-,{z:'oprd2[4]',c:'r',r:'No hits',i:'Hit \'_0\' and \'_1\''}
-,{z:'oprd2[5]',c:'r',r:'No hits',i:'Hit \'_0\' and \'_1\''}
-,{z:'oprd2[6]',c:'r',r:'No hits',i:'Hit \'_0\' and \'_1\''}
-,{z:'oprd2[7]',c:'r',r:'No hits',i:'Hit \'_0\' and \'_1\''}
+,{z:'oprd2[4]',c:'r',r:'\'_0\' not hit',i:'Hit \'_0\''}
+,{z:'oprd2[5]',c:'r',r:'\'_0\' not hit',i:'Hit \'_0\''}
+,{z:'oprd2[6]',c:'r',r:'\'_0\' not hit',i:'Hit \'_0\''}
+,{z:'oprd2[7]',c:'r',r:'\'_0\' not hit',i:'Hit \'_0\''}
 ,{}
 ,{n:'1',z:'oprd2[4]_0',h1:'0',t:'c',c1:'(~oprd2[7] && ~oprd2[6] && ~oprd2[5])'}
-,{n:'2',z:'oprd2[4]_1',h1:'0',t:'c',c1:'(~oprd2[7] && ~oprd2[6] && ~oprd2[5])'}
+,{n:'2',z:'oprd2[4]_1',h1:'1',t:'c',c1:'(~oprd2[7] && ~oprd2[6] && ~oprd2[5])'}
 ,{n:'3',z:'oprd2[5]_0',h1:'0',t:'c',c1:'(~oprd2[7] && ~oprd2[6] && ~oprd2[4])'}
-,{n:'4',z:'oprd2[5]_1',h1:'0',t:'c',c1:'(~oprd2[7] && ~oprd2[6] && ~oprd2[4])'}
+,{n:'4',z:'oprd2[5]_1',h1:'1',t:'c',c1:'(~oprd2[7] && ~oprd2[6] && ~oprd2[4])'}
 ,{n:'5',z:'oprd2[6]_0',h1:'0',t:'c',c1:'(~oprd2[7] && ~(oprd2[4] | oprd2[5]))'}
-,{n:'6',z:'oprd2[6]_1',h1:'0',t:'c',c1:'(~oprd2[7] && ~(oprd2[4] | oprd2[5]))'}
+,{n:'6',z:'oprd2[6]_1',h1:'1',t:'c',c1:'(~oprd2[7] && ~(oprd2[4] | oprd2[5]))'}
 ,{n:'7',z:'oprd2[7]_0',h1:'0',t:'c',c1:'~((oprd2[4] | oprd2[5]) | oprd2[6])'}
-,{n:'8',z:'oprd2[7]_1',h1:'0',t:'c',c1:'~((oprd2[4] | oprd2[5]) | oprd2[6])'}
+,{n:'8',z:'oprd2[7]_1',h1:'1',t:'c',c1:'~((oprd2[4] | oprd2[5]) | oprd2[6])'}
 ]}
 ],
 dummyEnd:0

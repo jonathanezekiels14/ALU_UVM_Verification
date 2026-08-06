@@ -1,5 +1,10 @@
 -html
-coverage_results.ucdb
+merged_coverage.ucdb
 -htmldir
 covReport
 -details
+-code
+bcesft
+-cvg
+-assert
+-directive
