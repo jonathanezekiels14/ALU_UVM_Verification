@@ -6,6 +6,13 @@ class alu_regression_test extends alu_base_test;
 		super.new(name, parent);
 	endfunction
 
+	// end of elaboration phase
+	function void end_of_elaboration_phase(uvm_phase phase);
+		super.end_of_elaboration_phase(phase);
+		`uvm_info("REG_TEST", "Printing Testbench Topology:", UVM_LOW)
+		uvm_top.print_topology();
+	endfunction
+
 	// run phase
 	virtual task run_phase(uvm_phase phase);
 		alu_sanity_sequence sanity_seq;

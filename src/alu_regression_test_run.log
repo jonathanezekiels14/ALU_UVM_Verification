@@ -1,5 +1,5 @@
 # vsim -vopt work.tb_top -voptargs="+acc=npr" -assertdebug -l alu_regression_test_run.log -coverage -c -wlf alu_regression_test.wlf -do "log -r /*; coverage save -onexit -assert -directive -cvg -codeAll alu_regression_test_cov.ucdb; run -all; exit" "+UVM_TESTNAME=alu_regression_test" "+UVM_VERBOSITY=UVM_HIGH" "+NUM_TX=10000" 
-# Start time: 15:18:48 on Aug 07,2026
+# Start time: 15:23:49 on Aug 07,2026
 # ** Note: (vsim-3812) Design is being optimized...
 # //  Questa Sim
 # //  Version 10.6c linux Jul 25 2017
@@ -55,11 +55,55 @@
 # UVM_INFO verilog_src/questa_uvm_pkg-1.2/src/questa_uvm_pkg.sv(215) @ 0: reporter [Questa UVM] QUESTA_UVM-1.2.3
 # UVM_INFO verilog_src/questa_uvm_pkg-1.2/src/questa_uvm_pkg.sv(217) @ 0: reporter [Questa UVM]  questa_uvm::init(+struct)
 # UVM_INFO @ 0: reporter [RNTST] Running test alu_regression_test...
+# UVM_INFO alu_regression_test.sv(12) @ 0: uvm_test_top [REG_TEST] Printing Testbench Topology:
+# UVM_INFO @ 0: reporter [UVMTOP] UVM testbench topology:
+# ------------------------------------------------------------------
+# Name                       Type                        Size  Value
+# ------------------------------------------------------------------
+# uvm_test_top               alu_regression_test         -     @473 
+#   env                      alu_env                     -     @480 
+#     cov_sub                alu_coverage_subscriber     -     @519 
+#       analysis_imp         uvm_analysis_imp            -     @526 
+#     in_agent               alu_input_agent             -     @498 
+#       agent_inp_port       uvm_analysis_port           -     @543 
+#       drv                  alu_driver                  -     @551 
+#         rsp_port           uvm_analysis_port           -     @566 
+#         seq_item_port      uvm_seq_item_pull_port      -     @558 
+#       inp_mon              alu_inpmon                  -     @536 
+#         inp_monitor_port   uvm_analysis_port           -     @685 
+#       seqr                 alu_sequencer               -     @574 
+#         rsp_export         uvm_analysis_export         -     @581 
+#         seq_item_export    uvm_seq_item_pull_imp       -     @675 
+#         arbitration_queue  array                       0     -    
+#         lock_queue         array                       0     -    
+#         num_last_reqs      integral                    32    'd1  
+#         num_last_rsps      integral                    32    'd1  
+#     out_agent              alu_output_agent            -     @505 
+#       agent_out_port       uvm_analysis_port           -     @707 
+#       out_mon              alu_outmon                  -     @700 
+#         out_monitor_port   uvm_analysis_port           -     @716 
+#     scbd                   alu_scoreboard              -     @512 
+#       inp_export           uvm_analysis_export         -     @724 
+#       inp_fifo             uvm_tlm_analysis_fifo #(T)  -     @740 
+#         analysis_export    uvm_analysis_imp            -     @779 
+#         get_ap             uvm_analysis_port           -     @771 
+#         get_peek_export    uvm_get_peek_imp            -     @755 
+#         put_ap             uvm_analysis_port           -     @763 
+#         put_export         uvm_put_imp                 -     @747 
+#       out_export           uvm_analysis_export         -     @732 
+#       out_fifo             uvm_tlm_analysis_fifo #(T)  -     @787 
+#         analysis_export    uvm_analysis_imp            -     @826 
+#         get_ap             uvm_analysis_port           -     @818 
+#         get_peek_export    uvm_get_peek_imp            -     @802 
+#         put_ap             uvm_analysis_port           -     @810 
+#         put_export         uvm_put_imp                 -     @794 
+# ------------------------------------------------------------------
+# 
 # UVM_INFO verilog_src/questa_uvm_pkg-1.2/src/questa_uvm_pkg.sv(277) @ 0: reporter [Questa UVM] End Of Elaboration
-# UVM_INFO alu_regression_test.sv(20) @ 0: uvm_test_top [REG_TEST] ==================================================
-# UVM_INFO alu_regression_test.sv(21) @ 0: uvm_test_top [REG_TEST] STARTING COMPREHENSIVE ALU REGRESSION
-# UVM_INFO alu_regression_test.sv(22) @ 0: uvm_test_top [REG_TEST] ==================================================
-# UVM_INFO alu_regression_test.sv(25) @ 0: uvm_test_top [REG_TEST] Sanity Test
+# UVM_INFO alu_regression_test.sv(27) @ 0: uvm_test_top [REG_TEST] ==================================================
+# UVM_INFO alu_regression_test.sv(28) @ 0: uvm_test_top [REG_TEST] STARTING COMPREHENSIVE ALU REGRESSION
+# UVM_INFO alu_regression_test.sv(29) @ 0: uvm_test_top [REG_TEST] ==================================================
+# UVM_INFO alu_regression_test.sv(32) @ 0: uvm_test_top [REG_TEST] Sanity Test
 # UVM_INFO tb_top.sv(55) @ 15: reporter [TB_TOP] Initial Reset Released.
 # UVM_INFO alu_scoreboard.sv(188) @ 45: uvm_test_top.env.scbd [SCBD_MATCH] PASS! Match Count: 1
 # UVM_INFO alu_scoreboard.sv(188) @ 55: uvm_test_top.env.scbd [SCBD_MATCH] PASS! Match Count: 2
@@ -207,7 +251,7 @@
 # 
 # UVM_INFO alu_scoreboard.sv(188) @ 105: uvm_test_top.env.scbd [SCBD_MATCH] PASS! Match Count: 4
 # UVM_INFO alu_scoreboard.sv(188) @ 115: uvm_test_top.env.scbd [SCBD_MATCH] PASS! Match Count: 5
-# UVM_INFO alu_regression_test.sv(30) @ 115: uvm_test_top [REG_TEST] Corner Test
+# UVM_INFO alu_regression_test.sv(37) @ 115: uvm_test_top [REG_TEST] Corner Test
 # UVM_INFO alu_scoreboard.sv(188) @ 125: uvm_test_top.env.scbd [SCBD_MATCH] PASS! Match Count: 6
 # UVM_INFO alu_scoreboard.sv(188) @ 135: uvm_test_top.env.scbd [SCBD_MATCH] PASS! Match Count: 7
 # UVM_ERROR alu_scoreboard.sv(191) @ 145: uvm_test_top.env.scbd [SCBD_MISMATCH] MISMATCH #4!
@@ -494,7 +538,7 @@
 #   timeout_occurred  integral         1     'h0  
 # ------------------------------------------------
 # 
-# UVM_INFO alu_regression_test.sv(35) @ 525: uvm_test_top [REG_TEST] Error Test
+# UVM_INFO alu_regression_test.sv(42) @ 525: uvm_test_top [REG_TEST] Error Test
 # UVM_ERROR alu_scoreboard.sv(191) @ 535: uvm_test_top.env.scbd [SCBD_MISMATCH] MISMATCH #10!
 # Expected:
 # ------------------------------------------------
@@ -683,7 +727,7 @@
 #   timeout_occurred  integral         1     'h1  
 # ------------------------------------------------
 # 
-# UVM_INFO alu_regression_test.sv(40) @ 715: uvm_test_top [REG_TEST] Rand Test
+# UVM_INFO alu_regression_test.sv(47) @ 715: uvm_test_top [REG_TEST] Rand Test
 # UVM_INFO alu_rand_sequence.sv(17) @ 715: reporter@@alu_rand_sequence [ALU_SEQ] Command-line override detected: NUM_TX set to 10000
 # UVM_ERROR alu_scoreboard.sv(191) @ 735: uvm_test_top.env.scbd [SCBD_MISMATCH] MISMATCH #14!
 # Expected:
@@ -372796,9 +372840,9 @@
 #   timeout_occurred  integral         1     'h0    
 # --------------------------------------------------
 # 
-# UVM_INFO alu_regression_test.sv(44) @ 100715: uvm_test_top [REG_TEST] ==================================================
-# UVM_INFO alu_regression_test.sv(45) @ 100715: uvm_test_top [REG_TEST] ALU REGRESSION SUITE COMPLETED SUCCESSFULLY
-# UVM_INFO alu_regression_test.sv(46) @ 100715: uvm_test_top [REG_TEST] ==================================================
+# UVM_INFO alu_regression_test.sv(51) @ 100715: uvm_test_top [REG_TEST] ==================================================
+# UVM_INFO alu_regression_test.sv(52) @ 100715: uvm_test_top [REG_TEST] ALU REGRESSION SUITE COMPLETED SUCCESSFULLY
+# UVM_INFO alu_regression_test.sv(53) @ 100715: uvm_test_top [REG_TEST] ==================================================
 # UVM_INFO alu_scoreboard.sv(188) @ 100725: uvm_test_top.env.scbd [SCBD_MATCH] PASS! Match Count: 2137
 # UVM_ERROR alu_scoreboard.sv(191) @ 100735: uvm_test_top.env.scbd [SCBD_MISMATCH] MISMATCH #7886!
 # Expected:
@@ -373188,7 +373232,7 @@
 # --- UVM Report Summary ---
 # 
 # ** Report counts by severity
-# UVM_INFO : 2161
+# UVM_INFO : 2163
 # UVM_WARNING :    0
 # UVM_ERROR : 7893
 # UVM_FATAL :    0
@@ -373196,7 +373240,7 @@
 # [ALU_COV]     1
 # [ALU_SEQ]     1
 # [Questa UVM]     3
-# [REG_TEST]    10
+# [REG_TEST]    11
 # [RNTST]     1
 # [SCBD_MATCH]  2137
 # [SCBD_MISMATCH]  7893
@@ -373204,8 +373248,9 @@
 # [TB_TOP]     1
 # [TEST_DONE]     1
 # [TEST_REPORT]     1
+# [UVMTOP]     1
 # ** Note: $finish    : /tools/mentor/questasim_10.6c/questasim/linux/../verilog_src/uvm-1.1d/src/base/uvm_root.svh(430)
 #    Time: 100815 ns  Iteration: 53  Instance: /tb_top
 # Saving coverage database on exit...
-# End time: 15:19:03 on Aug 07,2026, Elapsed time: 0:00:15
+# End time: 15:24:11 on Aug 07,2026, Elapsed time: 0:00:22
 # Errors: 0, Warnings: 2
