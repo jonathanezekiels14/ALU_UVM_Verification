@@ -1,10 +1,10 @@
 var g_data = {'dummy':{null},
 'work.alu_assertions':{h:'7',a:1,d:1,z:1},
-'/tb_top/u_dut/u_alu_sva':{h:'163',a:1,d:1,z:1},
+'/tb_top/dut/alu_sva':{h:'163',a:1,d:1,z:1},
 'work.ALU_DESIGN':{h:'6',s:1,b:1,c:1,t:1,z:1},
-'/tb_top/u_dut':{h:'11',s:1,b:1,c:1,t:1,z:1},
+'/tb_top/dut':{h:'11',s:1,b:1,c:1,t:1,z:1},
 'work.tb_top':{h:'5',z:1},
 '/tb_top':{h:'9',z:1},
-'/alu_pkg/alu_coverage_subscriber':{h:'901',g:1,z:1},
+'/alu_pkg/alu_coverage_subscriber':{h:'906',g:1,z:1},
 'work.alu_pkg':{h:'4',z:1},
-'/alu_pkg':{h:'884',z:1}};
+'/alu_pkg':{h:'889',z:1}};

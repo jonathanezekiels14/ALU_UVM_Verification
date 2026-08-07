@@ -1,4 +1,4 @@
 var g_db_data = [
 {dummy:0},
-{name:'alu_cg',f:1,type:6,id:902,tb:'142',h:'93',m:'49',hp:'65.49%',cov:['78.92%','Y'],g:'100.00%',gp:['78.92%','Y'],opts:[[],['merge_instance','auto(true)']],hdlPath:'/alu_pkg/alu_coverage_subscriber',parent:'901'}];
+{name:'alu_cg',f:1,type:6,id:907,tb:'139',h:'93',m:'46',hp:'66.90%',cov:['80.00%','Y'],g:'100.00%',gp:['80.00%','Y'],opts:[[],['merge_instance','auto(true)']],hdlPath:'/alu_pkg/alu_coverage_subscriber',parent:'906'}];
 processConsCovergroupsData(g_db_data);

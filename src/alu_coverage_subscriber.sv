@@ -1,69 +1,77 @@
 class alu_coverage_subscriber extends uvm_subscriber #(alu_transaction);
-  `uvm_component_utils(alu_coverage_subscriber)
+	`uvm_component_utils(alu_coverage_subscriber)
 
-  alu_transaction tx_item;
+	alu_transaction tx_item;
 
-  covergroup alu_cg;
-    option.per_instance = 1;
+	// define covergroup
+	covergroup alu_cg;
+		option.per_instance = 1;
 
-    cp_ce: coverpoint tx_item.CE {
-      bins ce_inactive = {0};
-      bins ce_active   = {1};
-    }
+		cp_ce: coverpoint tx_item.CE {
+			bins ce_inactive = {0};
+			bins ce_active = {1};
+		}
 
-    cp_opa: coverpoint tx_item.OPA {
-      bins zero     = {8'h00};
-      bins max_val  = {8'hFF};
-      bins mid_val  = {[8'h01 : 8'hFE]};
-    }
+		cp_opa: coverpoint tx_item.OPA {
+			bins zero = {8'h00};
+			bins max_val = {8'hFF};
+			bins mid_val = {[8'h01 : 8'hFE]};
+		}
 
-    cp_opb: coverpoint tx_item.OPB {
-      bins zero     = {8'h00};
-      bins max_val  = {8'hFF};
-      bins mid_val  = {[8'h01 : 8'hFE]};
-    }
+		cp_opb: coverpoint tx_item.OPB {
+			bins zero = {8'h00};
+			bins max_val = {8'hFF};
+			bins mid_val = {[8'h01 : 8'hFE]};
+		}
 
-    // Fixed: MODE 1 = Arithmetic, MODE 0 = Logical (matching design)
-    cp_mode: coverpoint tx_item.MODE {
-      bins logical    = {0};
-      bins arithmetic = {1};
-    }
+		cp_mode: coverpoint tx_item.MODE {
+			bins logical = {0};
+			bins arithmetic = {1};
+		}
 
-    cp_cmd: coverpoint tx_item.CMD {
-      bins cmds[] = {[0:13]};
-    }
+		cp_cmd: coverpoint tx_item.CMD {
+			bins cmds[] = {[0:13]};
+		}
 
-    cp_inpv: coverpoint tx_item.INP_VALID {
-      bins val_none  = {2'b00};
-      bins val_opa   = {2'b01};
-      bins val_opb   = {2'b10};
-      bins val_both  = {2'b11};
-    }
+		cp_inpv: coverpoint tx_item.INP_VALID {
+			bins val_none = {2'b00};
+			bins val_opa = {2'b01};
+			bins val_opb = {2'b10};
+			bins val_both = {2'b11};
+		}
 
-    cp_cin: coverpoint tx_item.CIN {
-      bins cin_0 = {0};
-      bins cin_1 = {1};
-    }
+		cp_cin: coverpoint tx_item.CIN {
+			bins cin_0 = {0};
+			bins cin_1 = {1};
+		}
 
-    cp_modexcmd: cross cp_mode, cp_cmd;
-    cp_cmdxinpv: cross cp_inpv, cp_cmd;
-    cp_cinxcmd:  cross cp_cin,  cp_cmd;
-  endgroup
+		cp_modexcmd: cross cp_mode, cp_cmd {
+			// ignore illegal commands in arithmetic mode
+			ignore_bins invalid_arith_cmds = binsof(cp_mode.arithmetic) && binsof(cp_cmd) intersect {[11:13]};
+		}
+		
+		cp_cmdxinpv: cross cp_inpv, cp_cmd;
+		
+		cp_cinxcmd: cross cp_cin, cp_cmd;
+	endgroup
 
-  function new(string name, uvm_component parent);
-    super.new(name, parent);
-    alu_cg = new();
-  endfunction
+	// constructor
+	function new(string name, uvm_component parent);
+		super.new(name, parent);
+		alu_cg = new();
+	endfunction
 
-  virtual function void write(alu_transaction t);
-    if (t == null) return;
-    this.tx_item = t;
-    alu_cg.sample();
-  endfunction
+	// write function for subscriber
+	virtual function void write(alu_transaction t);
+		if (t == null) return;
+		this.tx_item = t;
+		alu_cg.sample();
+	endfunction
 
-  virtual function void report_phase(uvm_phase phase);
-    super.report_phase(phase);
-    `uvm_info("ALU_COV", $sformatf("Functional Coverage = %0.2f%%", alu_cg.get_inst_coverage()), UVM_LOW)
-  endfunction
+	// report phase for coverage percentage
+	virtual function void report_phase(uvm_phase phase);
+		super.report_phase(phase);
+		`uvm_info("ALU_COV", $sformatf("Functional Coverage = %0.2f%%", alu_cg.get_inst_coverage()), UVM_LOW)
+	endfunction
 
 endclass

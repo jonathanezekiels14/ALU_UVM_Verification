@@ -8,7 +8,7 @@ scopes:[{link:'z.htm?f=0&s=7',val:'work.alu_assertions'}]
 ],
 },
 a163:{
-scopes:[{s:'9',b:'0',val:'tb_top'},{s:'11',b:'0',val:'u_dut'},{link:'z.htm?f=0&s=163',val:'u_alu_sva'}]
+scopes:[{s:'9',b:'0',val:'tb_top'},{s:'11',b:'0',val:'dut'},{link:'z.htm?f=0&s=163',val:'alu_sva'}]
 ,assertions:[{dummy:0},{cr:'c',c:'g',z:'assert_no_x_control',fc:'Gr',pc:'Gr',h0:'0',h1:'1'}
 ,{cr:'c',c:'g',z:'assert_ce_hold',fc:'Gr',pc:'Gr',h0:'0',h1:'1'}
 ,{cr:'c',c:'g',z:'assert_flag_mutual_exclusion',fc:'Gr',pc:'Gr',h0:'0',h1:'1'}
